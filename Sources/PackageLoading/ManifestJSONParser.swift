@@ -73,8 +73,8 @@ enum ManifestJSONParser {
 		if var obj = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
 			if var package = obj["package"] as? [String: Any] {
 				if var targets = package["targets"] as? [[String: Any]] {
-					for var t in targets {
-						t["packageAccess"] = false
+					for i in targets.indices {
+						targets[i]["packageAccess"] = false
 					}
 					print(targets)
 				}
