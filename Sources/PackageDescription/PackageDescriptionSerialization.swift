@@ -204,7 +204,7 @@ enum Serialization {
         let dependencies: [TargetDependency]
         let publicHeadersPath: String?
         let type: TargetType
-        var packageAccess: Bool = false
+		var packageAccess: Bool { true }
         let pkgConfig: String?
         let providers: [SystemPackageProvider]?
         let pluginCapability: PluginCapability?

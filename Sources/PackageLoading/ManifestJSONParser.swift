@@ -54,20 +54,26 @@ enum ManifestJSONParser {
         packageKind: PackageReference.Kind,
         identityResolver: IdentityResolver,
         fileSystem: FileSystem
-    ) throws -> ManifestJSONParser.Result {
-        let decoder = JSONDecoder.makeWithDefaults()
-
-        // Validate the version first to detect use of a mismatched PD library.
-        let versionedInput: VersionedInput
-        do {
-            versionedInput = try decoder.decode(VersionedInput.self, from: jsonString)
-        } catch {
-            // If we cannot even decode the version, assume that a pre-5.9 PD library is being used which emits an incompatible JSON format.
-            throw ManifestParseError.unsupportedVersion(version: 1, underlyingError: "\(error.interpolationDescription)")
-        }
-        guard versionedInput.version == 2 else {
-            throw ManifestParseError.unsupportedVersion(version: versionedInput.version)
-        }
+	) throws -> ManifestJSONParser.Result {
+		let decoder = JSONDecoder.makeWithDefaults()
+		
+		// Validate the version first to detect use of a mismatched PD library.
+		let versionedInput: VersionedInput
+		do {
+			versionedInput = try decoder.decode(VersionedInput.self, from: jsonString)
+		} catch {
+			// If we cannot even decode the version, assume that a pre-5.9 PD library is being used which emits an incompatible JSON format.
+			throw ManifestParseError.unsupportedVersion(version: 1, underlyingError: "\(error.interpolationDescription)")
+		}
+		guard versionedInput.version == 2 else {
+			throw ManifestParseError.unsupportedVersion(version: versionedInput.version)
+		}
+		
+		if var obj = try? JSONSerialization.jsonObject(with: jsonString.data(using: .utf8) ?? Data()) as? [String: AnyObject] {
+			if var targets = obj["targets"] as? [[String: AnyObject]] {
+				print(targets)
+			}
+		}
 
         let input = try decoder.decode(Input.self, from: jsonString)
 
