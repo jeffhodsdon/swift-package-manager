@@ -68,9 +68,13 @@ enum ManifestJSONParser {
 		guard versionedInput.version == 2 else {
 			throw ManifestParseError.unsupportedVersion(version: versionedInput.version)
 		}
-		
-		if var obj = try? JSONSerialization.jsonObject(with: jsonString.data(using: .utf8) ?? Data()) as? [String: AnyObject] {
-			if var targets = obj["targets"] as? [[String: AnyObject]] {
+
+		let data = Data(jsonString.utf8)
+		if var obj = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
+			if var targets = obj["targets"] as? [[String: Any]] {
+				for var t in targets {
+					t["packageAccess"] = false
+				}
 				print(targets)
 			}
 		}
